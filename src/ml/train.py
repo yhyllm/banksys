@@ -65,7 +65,6 @@ def train() -> tuple[Pipeline, dict]:
     sample_weight = compute_sample_weight("balanced", y_train)
     pipeline.fit(X_train, y_train, classifier__sample_weight=sample_weight)
 
-    y_val_pred = pipeline.predict(X_val)
     y_val_proba = pipeline.predict_proba(X_val)[:, 1]
 
     cv_proba = cross_val_predict(pipeline, X_train, y_train, cv=3, method="predict_proba")[:, 1]
