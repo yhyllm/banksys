@@ -60,11 +60,15 @@ jobs:
               if ! port_in_use "$p"; then HOST_PORT="$p"; break; fi
             done
             [ -z "$HOST_PORT" ] && { echo "All ports $PORT-$PORT_MAX occupied, abort"; exit 1; }
-            echo ">> Deploying to host port $HOST_PORT"
-            docker run -d --name $APP --restart unless-stopped -p ${HOST_PORT}:8000 $APP:latest
+            echo ">> Deploying API to port $HOST_PORT, frontend to 8050"
+            docker run -d --name $APP --restart unless-stopped \
+              -p ${HOST_PORT}:8000 \
+              -p 8050:8050 \
+              $APP:latest
 
-            sleep 3
+            sleep 5
 
             # Health check
             curl -fsS "http://localhost:${HOST_PORT}/health"
-            echo ">> Deploy OK: http://${{ secrets.SSH_HOST }}:${HOST_PORT}/health"
+            echo ">> API:    http://${{ secrets.SSH_HOST }}:${HOST_PORT}/docs"
+            echo ">> 前端:   http://${{ secrets.SSH_HOST }}:8050"

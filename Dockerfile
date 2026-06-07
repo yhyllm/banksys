@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir --timeout 120 -i "${PIP_INDEX_URL}" \
 # Copy source and data
 COPY src/ ./src/
 COPY data/ ./data/
+COPY frontend/ ./frontend/
 
 # Train the model during image build (so models/ is baked in)
 RUN python -m src.train
@@ -22,6 +23,9 @@ RUN python -m src.train
 RUN pip uninstall -y pytest pytest-cov ruff httpx coverage && \
     rm -f requirements-dev.txt
 
-EXPOSE 8000
+EXPOSE 8000 8050
 
-CMD ["uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start both API (8000) and frontend (8050)
+CMD sh -c "uvicorn src.api:app --host 0.0.0.0 --port 8000 & \
+           python -m http.server 8050 --directory /app/frontend & \
+           wait"
