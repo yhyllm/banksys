@@ -40,12 +40,15 @@ jobs:
               cd $DEPLOY_DIR
             fi
 
+            # Stop & remove old container first (free its port)
+            docker rm -f $APP 2>/dev/null || true
+
             # Build Docker image (use Tsinghua mirror for domestic servers)
             docker build \
               --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple \
               -t $APP:latest .
 
-            # Find available port
+            # Find available port (default: 8000, now freed by docker rm -f above)
             port_in_use() {
               ss -ltnH 2>/dev/null | grep -q ":$1 " && return 0
               docker ps --format "{{.Ports}}" 2>/dev/null | grep -q ":$1->" && return 0
@@ -58,9 +61,6 @@ jobs:
             done
             [ -z "$HOST_PORT" ] && { echo "All ports $PORT-$PORT_MAX occupied, abort"; exit 1; }
             echo ">> Deploying to host port $HOST_PORT"
-
-            # Stop & remove old container, then start new one
-            docker rm -f $APP 2>/dev/null || true
             docker run -d --name $APP --restart unless-stopped -p ${HOST_PORT}:8000 $APP:latest
 
             sleep 3
