@@ -40,8 +40,10 @@ jobs:
               cd $DEPLOY_DIR
             fi
 
-            # Build Docker image
-            docker build -t $APP:latest .
+            # Build Docker image (use Tsinghua mirror for domestic servers)
+            docker build \
+              --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple \
+              -t $APP:latest .
 
             # Find available port
             port_in_use() {
