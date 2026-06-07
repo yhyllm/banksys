@@ -8,12 +8,14 @@
 
 ## 当前状态 (最后更新: 2026-06-07 · by AI)
 
-- **阶段**:`第③步 — 模块化开发中(US-1: 工程化初始化)`
+- **阶段**:`第③步 — US-1 工程化完成,等待确认后进入 US-2`
 - **上一步完成**:
   - ✅ 第①步:建仓 `yhyllm/banksys` + 配 Secrets
   - ✅ 第②步:开分支 `feature/1-init-engineering`
-  - ✅ 模块 A:依赖文件 + 目录结构 + Dockerfile(6 测试全过)
-- **下一步 (TODO 第一条)**:完成模块 B — CI/CD workflows
+  - ✅ 模块 A:依赖文件 + 目录结构 + Dockerfile
+  - ✅ 模块 B:CI/CD workflows (ci.yml + cd.yml)
+  - ✅ 本地自检:16/16 测试 | ruff format ✅ | ruff lint ✅ | 覆盖率 100%
+- **下一步 (TODO 第一条)**:用户确认 US-1 → 进入 US-2「数据探索与预处理」
 - **阻塞项**:无
 
 ---
@@ -25,9 +27,9 @@
 - [x] 填写 `01-requirements.md`(US-1 到 US-5 用户故事与验收标准)
 - [x] **用户确认** 00/01/PROGRESS 内容
 - [x] 第①步 — 建仓:用 `gh` 创建 GitHub 仓库 `yhyllm/banksys` + 初始提交 + push ✅
-- [ ] 第①步 — 配 Secrets:**人工配置** SSH_PRIVATE_KEY / SSH_HOST / SSH_USER(见下方阻塞项)
-- [ ] 第②步:开第一条 feature 分支(`feature/1-init-engineering`)
-- [ ] US-1:初始化工程结构(`requirements.txt`, `src/`, `tests/`, `Dockerfile`, CI/CD workflows)
+- [x] 第①步 — 配 Secrets:SSH_PRIVATE_KEY / SSH_HOST / SSH_USER 已配置
+- [x] 第②步:开第一条 feature 分支(`feature/1-init-engineering`)
+- [x] US-1:初始化工程结构(`requirements.txt`, `src/`, `tests/`, `Dockerfile`, CI/CD workflows)
 - [ ] US-2:数据探索与预处理(`src/preprocess.py` + `tests/test_preprocess.py`)
 - [ ] US-3:模型训练与评估(`src/train.py` + `tests/test_train.py`)
 - [ ] US-4:预测 API 服务(`src/api.py` + `tests/test_api.py`)
@@ -50,7 +52,7 @@
 
 ## 已知坑 (GOTCHAS)
 
-- 暂无(项目尚未进入开发阶段)
+- **PyYAML `on` 布尔陷阱**:PyYAML 1.1 将 `on` 解析为布尔 `True`,而非字符串。GitHub Actions 用 YAML 1.2 不受影响,但本地测试用 `yaml.safe_load` 读取 workflow YAML 时会失败;解决:测试用字符串匹配,不依赖 PyYAML 解析 `on` 键。
 
 ---
 
@@ -59,3 +61,4 @@
 - [x] 2026-06-07:standards 规范全部读取完毕
 - [x] 2026-06-07:三个「项目活记忆」文件初始化完成,用户确认通过
 - [x] 2026-06-07:第①步建仓 — GitHub 仓库 `yhyllm/banksys` 创建并推送成功
+- [x] 2026-06-07:US-1 工程化初始化完成 — 16/16 测试全过,本地门禁全绿
