@@ -8,14 +8,12 @@
 
 ## 当前状态 (最后更新: 2026-06-07 · by AI)
 
-- **阶段**:`第③步 — US-1 工程化完成,等待确认后进入 US-2`
+- **阶段**:`第③步 — US-2 数据预处理完成,等待确认后进入 US-3`
 - **上一步完成**:
-  - ✅ 第①步:建仓 `yhyllm/banksys` + 配 Secrets
-  - ✅ 第②步:开分支 `feature/1-init-engineering`
-  - ✅ 模块 A:依赖文件 + 目录结构 + Dockerfile
-  - ✅ 模块 B:CI/CD workflows (ci.yml + cd.yml)
-  - ✅ 本地自检:16/16 测试 | ruff format ✅ | ruff lint ✅ | 覆盖率 100%
-- **下一步 (TODO 第一条)**:用户确认 US-1 → 进入 US-2「数据探索与预处理」
+  - ✅ US-1:工程化初始化(requirements, Dockerfile, CI/CD workflows)
+  - ✅ US-2:数据探索与预处理 — `src/preprocess.py` + 14 个测试
+  - ✅ 本地自检:30/30 测试 | ruff format ✅ | ruff lint ✅ | 覆盖率 96%
+- **下一步 (TODO 第一条)**:用户确认 US-2 → 进入 US-3「模型训练与评估」
 - **阻塞项**:无
 
 ---
@@ -30,7 +28,7 @@
 - [x] 第①步 — 配 Secrets:SSH_PRIVATE_KEY / SSH_HOST / SSH_USER 已配置
 - [x] 第②步:开第一条 feature 分支(`feature/1-init-engineering`)
 - [x] US-1:初始化工程结构(`requirements.txt`, `src/`, `tests/`, `Dockerfile`, CI/CD workflows)
-- [ ] US-2:数据探索与预处理(`src/preprocess.py` + `tests/test_preprocess.py`)
+- [x] US-2:数据探索与预处理(`src/preprocess.py` + `tests/test_preprocess.py`)
 - [ ] US-3:模型训练与评估(`src/train.py` + `tests/test_train.py`)
 - [ ] US-4:预测 API 服务(`src/api.py` + `tests/test_api.py`)
 - [ ] US-5:容器化与 CD 部署
@@ -62,3 +60,4 @@
 - [x] 2026-06-07:三个「项目活记忆」文件初始化完成,用户确认通过
 - [x] 2026-06-07:第①步建仓 — GitHub 仓库 `yhyllm/banksys` 创建并推送成功
 - [x] 2026-06-07:US-1 工程化初始化完成 — 16/16 测试全过,本地门禁全绿
+- [x] 2026-06-07:US-2 数据预处理完成 — 30/30 测试,覆盖率 96%
