@@ -8,12 +8,13 @@
 
 ## 当前状态 (最后更新: 2026-06-07 · by AI)
 
-- **阶段**:`第③步 — US-2 数据预处理完成,等待确认后进入 US-3`
+- **阶段**:`第③步 — US-3 模型训练完成,等待确认后进入 US-4`
 - **上一步完成**:
   - ✅ US-1:工程化初始化(requirements, Dockerfile, CI/CD workflows)
-  - ✅ US-2:数据探索与预处理 — `src/preprocess.py` + 14 个测试
-  - ✅ 本地自检:30/30 测试 | ruff format ✅ | ruff lint ✅ | 覆盖率 96%
-- **下一步 (TODO 第一条)**:用户确认 US-2 → 进入 US-3「模型训练与评估」
+  - ✅ US-2:数据预处理 — `src/preprocess.py`
+  - ✅ US-3:模型训练 — `src/train.py`(LR + RF,RandForest 最佳 Accuracy 0.8818)
+  - ✅ 本地自检:41/41 测试 | ruff format ✅ | ruff lint ✅ | 覆盖率 97%
+- **下一步 (TODO 第一条)**:用户确认 US-3 → 进入 US-4「预测 API 服务」
 - **阻塞项**:无
 
 ---
@@ -29,7 +30,7 @@
 - [x] 第②步:开第一条 feature 分支(`feature/1-init-engineering`)
 - [x] US-1:初始化工程结构(`requirements.txt`, `src/`, `tests/`, `Dockerfile`, CI/CD workflows)
 - [x] US-2:数据探索与预处理(`src/preprocess.py` + `tests/test_preprocess.py`)
-- [ ] US-3:模型训练与评估(`src/train.py` + `tests/test_train.py`)
+- [x] US-3:模型训练与评估(`src/train.py` + `tests/test_train.py`)
 - [ ] US-4:预测 API 服务(`src/api.py` + `tests/test_api.py`)
 - [ ] US-5:容器化与 CD 部署
 - [ ] 本地 CI 自检通过(ruff + pytest + 覆盖率 >= 80%)
@@ -45,6 +46,7 @@
 | 2026-06-07 | 模型指标门槛:Accuracy >= 0.85 | 基线值,后续可按调优结果调整 |
 | 2026-06-07 | 数据集纳入 Git | 公开教学数据,体积可控(合计 ~3.7MB),方便 CI runner 直接使用 |
 | 2026-06-07 | 模型产物不进 Git | `models/` 目录 gitignore,由训练脚本在本地/CI 中生成 |
+| 2026-06-07 | 选 Random Forest 为最佳模型(Accuracy 0.8818) | LR 0.7944 < 0.85 门槛;RF 虽 Recall 低(0.18)但 Accuracy 满足要求;评价标准为 Accuracy |
 
 ---
 
@@ -61,3 +63,4 @@
 - [x] 2026-06-07:第①步建仓 — GitHub 仓库 `yhyllm/banksys` 创建并推送成功
 - [x] 2026-06-07:US-1 工程化初始化完成 — 16/16 测试全过,本地门禁全绿
 - [x] 2026-06-07:US-2 数据预处理完成 — 30/30 测试,覆盖率 96%
+- [x] 2026-06-07:US-3 模型训练完成 — 41/41 测试,覆盖率 97%,RF Accuracy 0.8818
