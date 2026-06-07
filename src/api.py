@@ -5,6 +5,7 @@ from typing import Optional
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 
@@ -91,6 +92,14 @@ app = FastAPI(
     description="Predict whether a bank customer will subscribe to a term deposit.",
     version="1.0.0",
     lifespan=lifespan,
+)
+
+# Allow cross-origin requests from the frontend (port 8050)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 

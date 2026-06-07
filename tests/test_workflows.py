@@ -9,7 +9,7 @@ def _workflow_dir():
 
 def _read_workflow(name):
     """Read a workflow file as raw text."""
-    return (_workflow_dir() / name).read_text()
+    return (_workflow_dir() / name).read_text(encoding="utf-8")
 
 
 def test_ci_workflow_exists():
@@ -59,7 +59,7 @@ def test_cd_triggers_on_push_main():
 def test_cd_uses_secrets():
     """CD must reference SSH secrets, not hardcoded values."""
     cd = _workflow_dir() / "cd.yml"
-    text = cd.read_text()
+    text = cd.read_text(encoding="utf-8")
     assert "secrets.SSH_HOST" in text, "CD must use SSH_HOST from Secrets"
     assert "secrets.SSH_USER" in text, "CD must use SSH_USER from Secrets"
     assert "secrets.SSH_PRIVATE_KEY" in text, "CD must use SSH_PRIVATE_KEY from Secrets"
@@ -68,6 +68,6 @@ def test_cd_uses_secrets():
 def test_cd_includes_health_check():
     """CD must run a health check after deployment."""
     cd = _workflow_dir() / "cd.yml"
-    text = cd.read_text()
+    text = cd.read_text(encoding="utf-8")
     assert "/health" in text, "CD must run health check"
     assert "curl" in text, "CD must use curl for health check"
