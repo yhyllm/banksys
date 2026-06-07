@@ -24,6 +24,7 @@ jobs:
           rsync -avz \
             -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key" \
             --exclude='.git' \
+            --exclude='artifacts/' \
             --exclude='models/' \
             --exclude='__pycache__' \
             --exclude='.pytest_cache' \
@@ -42,7 +43,7 @@ jobs:
             DEPLOY_DIR=/opt/banksys
             cd $DEPLOY_DIR
 
-            # Stop & remove old container first (free port 8000)
+            # Stop & remove old container first (free port 8004)
             docker rm -f $APP 2>/dev/null || true
 
             # Build Docker image
@@ -52,13 +53,11 @@ jobs:
 
             # Start new container
             docker run -d --name $APP --restart unless-stopped \
-              -p 8000:8000 \
-              -p 8050:8050 \
+              -p 8004:8004 \
               $APP:latest
 
             sleep 5
 
             # Health check
-            curl -fsS "http://localhost:8000/health"
-            echo ">> API:    http://${{ secrets.SSH_HOST }}:8000/docs"
-            echo ">> Frontend: http://${{ secrets.SSH_HOST }}:8050"
+            curl -fsS "http://localhost:8004/_stcore/health"
+            echo ">> Streamlit: http://${{ secrets.SSH_HOST }}:8004"
