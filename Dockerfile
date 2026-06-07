@@ -6,16 +6,22 @@ ENV PIP_INDEX_URL=${PIP_INDEX_URL}
 
 WORKDIR /app
 
-# Copy and install production dependencies only
-COPY requirements.txt .
-RUN pip install --no-cache-dir --timeout 120 -i "${PIP_INDEX_URL}" -r requirements.txt
+# Copy dependency files and install
+COPY requirements.txt requirements-dev.txt ./
+RUN pip install --no-cache-dir --timeout 120 -i "${PIP_INDEX_URL}" \
+    -r requirements.txt -r requirements-dev.txt
 
-# Copy source code
+# Copy source and data
 COPY src/ ./src/
-COPY models/ ./models/
+COPY data/ ./data/
 
-# Expose service port
+# Train the model during image build (so models/ is baked in)
+RUN python -m src.train
+
+# Remove dev dependencies to keep image lean
+RUN pip uninstall -y pytest pytest-cov ruff httpx coverage && \
+    rm -f requirements-dev.txt
+
 EXPOSE 8000
 
-# Start FastAPI with uvicorn
 CMD ["uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000"]
