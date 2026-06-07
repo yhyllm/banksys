@@ -8,10 +8,14 @@
 
 ## 当前状态 (最后更新: 2026-06-07 · by AI)
 
-- **阶段**:`初始化`
-- **上一步完成**:读取 standards 全部文件,填写 `00-project-context.md` 与 `01-requirements.md`,初始化 `PROGRESS.md`。
-- **下一步 (TODO 第一条)**:用户确认项目上下文与需求后,进入六步流程第①步 — 建仓 + 配 Secrets。
-- **阻塞项**:等待用户确认三个「项目活记忆」文件的内容(特别是技术栈选择、模型指标门槛、部署服务器信息)。
+- **阶段**:`第①步 — 建仓已完成,等待配 Secrets`
+- **上一步完成**:
+  - 填写 `00-project-context.md`、`01-requirements.md`、`PROGRESS.md`
+  - `git init` + 初始提交(16 个文件)
+  - `gh repo create banksys --public` + push 成功
+  - 仓库地址: https://github.com/yhyllm/banksys
+- **下一步 (TODO 第一条)**:人工配置 GitHub Secrets → 进入第②步开 feature 分支
+- **阻塞项**:**GitHub Secrets 未配置**(SSH_PRIVATE_KEY / SSH_HOST / SSH_USER),CD 无法运行
 
 ---
 
@@ -20,8 +24,9 @@
 - [x] 读取 standards/README.md 及 00~06 全部规范文件
 - [x] 填写 `00-project-context.md`(项目身份、技术栈、目录地图、质量门槛)
 - [x] 填写 `01-requirements.md`(US-1 到 US-5 用户故事与验收标准)
-- [ ] **用户确认** 00/01/PROGRESS 内容
-- [ ] 第①步:建仓 + 配 Secrets — 用 `gh` 创建 GitHub 仓库,提示配置 SSH_PRIVATE_KEY/SSH_HOST/SSH_USER
+- [x] **用户确认** 00/01/PROGRESS 内容
+- [x] 第①步 — 建仓:用 `gh` 创建 GitHub 仓库 `yhyllm/banksys` + 初始提交 + push ✅
+- [ ] 第①步 — 配 Secrets:**人工配置** SSH_PRIVATE_KEY / SSH_HOST / SSH_USER(见下方阻塞项)
 - [ ] 第②步:开第一条 feature 分支(`feature/1-init-engineering`)
 - [ ] US-1:初始化工程结构(`requirements.txt`, `src/`, `tests/`, `Dockerfile`, CI/CD workflows)
 - [ ] US-2:数据探索与预处理(`src/preprocess.py` + `tests/test_preprocess.py`)
@@ -53,4 +58,5 @@
 ## 里程碑 (DONE)
 
 - [x] 2026-06-07:standards 规范全部读取完毕
-- [x] 2026-06-07:三个「项目活记忆」文件初始化完成,等待人工确认
+- [x] 2026-06-07:三个「项目活记忆」文件初始化完成,用户确认通过
+- [x] 2026-06-07:第①步建仓 — GitHub 仓库 `yhyllm/banksys` 创建并推送成功
