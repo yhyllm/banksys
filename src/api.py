@@ -5,6 +5,7 @@ from typing import Optional
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 
 from src.preprocess import _add_features
@@ -116,6 +117,12 @@ def _predict_one(customer: CustomerFeatures) -> PredictionResult:
 
 
 # ---- Routes ----------------------------------------------------------------
+
+
+@app.get("/")
+async def root():
+    """Redirect to API documentation."""
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/health", response_model=HealthResponse)
