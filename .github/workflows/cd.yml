@@ -7,13 +7,30 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Deploy to server via SSH
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      - name: Rsync code to server
+        run: |
+          rsync -avz \
+            -e "ssh -o StrictHostKeyChecking=no -i ~/.ssh/deploy_key" \
+            --exclude='.git' \
+            --exclude='artifacts/' \
+            --exclude='models/' \
+            --exclude='__pycache__' \
+            --exclude='.pytest_cache' \
+            ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/opt/banksys/
+
+      - name: Deploy on server
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -24,51 +41,23 @@ jobs:
 
             APP=banksys
             DEPLOY_DIR=/opt/banksys
-            PORT=8000
-            PORT_MAX=8010
+            cd $DEPLOY_DIR
 
-            REPO_URL=https://github.com/yhyllm/banksys.git
-
-            # Clone or pull latest code
-            if [ -d "$DEPLOY_DIR/.git" ]; then
-              cd $DEPLOY_DIR
-              # Ensure remote is HTTPS (not SSH) in case of legacy setup
-              git remote set-url origin "$REPO_URL" 2>/dev/null || true
-              git pull
-            else
-              git clone "$REPO_URL" "$DEPLOY_DIR"
-              cd $DEPLOY_DIR
-            fi
-
-            # Stop & remove old container first (free its port)
+            # Stop & remove old container first (free port 8004)
             docker rm -f $APP 2>/dev/null || true
 
-            # Build Docker image (use Tsinghua mirror for domestic servers)
+            # Build Docker image
             docker build \
               --build-arg PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple \
               -t $APP:latest .
 
-            # Find available port (default: 8000, now freed by docker rm -f above)
-            port_in_use() {
-              ss -ltnH 2>/dev/null | grep -q ":$1 " && return 0
-              docker ps --format "{{.Ports}}" 2>/dev/null | grep -q ":$1->" && return 0
-              return 1
-            }
-
-            HOST_PORT=""
-            for p in $(seq $PORT $PORT_MAX); do
-              if ! port_in_use "$p"; then HOST_PORT="$p"; break; fi
-            done
-            [ -z "$HOST_PORT" ] && { echo "All ports $PORT-$PORT_MAX occupied, abort"; exit 1; }
-            echo ">> Deploying API to port $HOST_PORT, frontend to 8050"
+            # Start new container
             docker run -d --name $APP --restart unless-stopped \
-              -p ${HOST_PORT}:8000 \
-              -p 8050:8050 \
+              -p 8004:8004 \
               $APP:latest
 
             sleep 5
 
             # Health check
-            curl -fsS "http://localhost:${HOST_PORT}/health"
-            echo ">> API:    http://${{ secrets.SSH_HOST }}:${HOST_PORT}/docs"
-            echo ">> 前端:   http://${{ secrets.SSH_HOST }}:8050"
+            curl -fsS "http://localhost:8004/_stcore/health"
+            echo ">> Streamlit: http://${{ secrets.SSH_HOST }}:8004"

@@ -1,0 +1,22 @@
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+omit = [
+    "src/app.py",
+    "src/pages/*",
+    "src/__init__.py",
+    "src/utils/__init__.py",
+    "src/ml/__init__.py",
+]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true

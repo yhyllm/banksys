@@ -14,18 +14,18 @@ RUN pip install --no-cache-dir --timeout 120 -i "${PIP_INDEX_URL}" \
 # Copy source and data
 COPY src/ ./src/
 COPY data/ ./data/
-COPY frontend/ ./frontend/
+COPY .streamlit/ ./.streamlit/
 
-# Train the model during image build (so models/ is baked in)
-RUN python -m src.train
+# Train the model during image build (so artifacts/ is baked in)
+RUN mkdir -p artifacts && python -m src.ml.train
 
 # Remove dev dependencies to keep image lean
-RUN pip uninstall -y pytest pytest-cov ruff httpx coverage && \
+RUN pip uninstall -y pytest pytest-cov ruff && \
     rm -f requirements-dev.txt
 
-EXPOSE 8000 8050
+EXPOSE 8004
 
-# Start both API (8000) and frontend (8050)
-CMD sh -c "uvicorn src.api:app --host 0.0.0.0 --port 8000 & \
-           python -m http.server 8050 --directory /app/frontend & \
-           wait"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -fsS http://localhost:8004/_stcore/health || exit 1
+
+CMD ["streamlit", "run", "src/app.py", "--server.port=8004", "--server.address=0.0.0.0"]

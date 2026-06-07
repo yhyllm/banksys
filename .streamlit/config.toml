@@ -1,0 +1,4 @@
+[server]
+port = 8004
+headless = true
+runOnSave = true
