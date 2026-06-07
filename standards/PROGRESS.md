@@ -8,14 +8,13 @@
 
 ## 当前状态 (最后更新: 2026-06-07 · by AI)
 
-- **阶段**:`第②步 — 分支已开,等待确认进入开发`
+- **阶段**:`第③步 — 模块化开发中(US-1: 工程化初始化)`
 - **上一步完成**:
-  - 填写 `00-project-context.md`、`01-requirements.md`、`PROGRESS.md`
-  - `git init` + 初始提交(16 个文件)
-  - `gh repo create banksys --public` + push 成功
-  - 仓库地址: https://github.com/yhyllm/banksys
-- **下一步 (TODO 第一条)**:人工配置 GitHub Secrets → 进入第②步开 feature 分支
-- **阻塞项**:**GitHub Secrets 未配置**(SSH_PRIVATE_KEY / SSH_HOST / SSH_USER),CD 无法运行
+  - ✅ 第①步:建仓 `yhyllm/banksys` + 配 Secrets
+  - ✅ 第②步:开分支 `feature/1-init-engineering`
+  - ✅ 模块 A:依赖文件 + 目录结构 + Dockerfile(6 测试全过)
+- **下一步 (TODO 第一条)**:完成模块 B — CI/CD workflows
+- **阻塞项**:无
 
 ---
 
