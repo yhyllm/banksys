@@ -27,12 +27,16 @@ jobs:
             PORT=8000
             PORT_MAX=8010
 
+            REPO_URL=https://github.com/yhyllm/banksys.git
+
             # Clone or pull latest code
             if [ -d "$DEPLOY_DIR/.git" ]; then
               cd $DEPLOY_DIR
+              # Ensure remote is HTTPS (not SSH) in case of legacy setup
+              git remote set-url origin "$REPO_URL" 2>/dev/null || true
               git pull
             else
-              git clone git@github.com:yhyllm/banksys.git $DEPLOY_DIR
+              git clone "$REPO_URL" "$DEPLOY_DIR"
               cd $DEPLOY_DIR
             fi
 

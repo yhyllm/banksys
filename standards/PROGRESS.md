@@ -8,15 +8,15 @@
 
 ## 当前状态 (最后更新: 2026-06-07 · by AI)
 
-- **阶段**:`第③步 — US-1~4 全部完成,等待确认后进入第④步(本地 CI 自检)`
+- **阶段**:`第⑥步 — CD 初版失败已修复,等 PR #2 合并后重试 CD`
 - **上一步完成**:
-  - ✅ US-1:工程化初始化(requirements, Dockerfile, CI/CD workflows)
-  - ✅ US-2:数据预处理 — `src/preprocess.py`
-  - ✅ US-3:模型训练 — `src/train.py`(LR + RF,RF Accuracy 0.8818)
-  - ✅ US-4:预测 API — `src/api.py`(FastAPI, /health /predict /predict/batch)
-  - ✅ 本地自检:59/59 测试 | ruff format ✅ | ruff lint ✅ | 覆盖率 97%
-- **下一步 (TODO 第一条)**:用户确认 → push 分支 → 第⑤步创建 PR → CI → 人工合并 → CD
-- **阻塞项**:无
+  - ✅ US-1~4:全部功能模块(预处理/训练/API) + 59 测试
+  - ✅ PR #1 已合并到 main
+  - ❌ CD #1 失败:`Host key verification failed`(SSH clone 需服务器配 GitHub 主机密钥)
+  - ✅ `fix/2-cd-https-clone` 分支修复:改用 HTTPS 克隆公共仓库
+  - ✅ PR #2 CI 全绿: https://github.com/yhyllm/banksys/pull/2
+- **下一步 (TODO 第一条)**:**人工合并 PR #2** → CD 重新触发
+- **阻塞项**:等待人工 Review 并合并 PR #2
 
 ---
 
@@ -53,7 +53,8 @@
 
 ## 已知坑 (GOTCHAS)
 
-- **PyYAML `on` 布尔陷阱**:PyYAML 1.1 将 `on` 解析为布尔 `True`,而非字符串。GitHub Actions 用 YAML 1.2 不受影响,但本地测试用 `yaml.safe_load` 读取 workflow YAML 时会失败;解决:测试用字符串匹配,不依赖 PyYAML 解析 `on` 键。
+- **PyYAML `on` 布尔陷阱**:PyYAML 1.1 将 `on` 解析为布尔 `True`,而非字符串。GitHub Actions 用 YAML 1.2 不受影响,但本地测试用 `yaml.safe_load` 读取 workflow YAML 时会失败;解决:测试用字符串匹配。
+- **CD `Host key verification failed`**:CD 脚本用 `git clone git@github.com:...` 在服务器克隆,但服务器 `~/.ssh/known_hosts` 无 GitHub 主机密钥;解决:公共仓库改用 HTTPS 克隆 `https://github.com/...`,无需认证。
 
 ---
 
